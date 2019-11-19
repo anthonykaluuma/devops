@@ -7,7 +7,26 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+var express = require('express'); 
+// Import the library: 
+var cors = require('cors');
 var app = express();
+// Then use it before your routes are set up: 
+app.use(cors());
+
+// whitelist check: 
+var whitelist = ['http://example1.com', 'http://example2.com'];
+var corsOptions = {   
+    origin: function (origin, callback) {     
+         if (whitelist.indexOf(origin) !== -1) {
+             callback(null, true)     
+         } else {
+             callback(new Error('Not allowed by CORS'))
+         }
+    }
+}  
+// Then pass them to cors: 
+app.use(cors(corsOptions));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
