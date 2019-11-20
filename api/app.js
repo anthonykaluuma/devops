@@ -4,6 +4,8 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
+var mongoose = require('mongoose');
+
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -12,21 +14,36 @@ var testDBRouter = require("./routes/testDB");
 
 var app = express();
 
+var allowCrossDomain = function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*"); // allow requests from any other server
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE'); // allow these verbs
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Cache-Control");
+  next();
+};
+     
+// Connect to DB
+mongoose.connect('mongodb://127.0.0.1:27017/mongo');
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
-
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/testAPI", testAPIRouter);
 app.use("/testDB", testDBRouter);
+app.use(allowCrossDomain); // plumbing it in as middleware
+
+// API Routes
+var router = express.Router();
+
+// Routes will be prefixed with /api
+app.use('/api', router);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
