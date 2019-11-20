@@ -1,4 +1,4 @@
-version: "2"
+version: "3.7"
 services:
     client:
         image: mhart/alpine-node:8.11.4
@@ -9,31 +9,34 @@ services:
         volumes:
             - ./client:/client/src/app
         entrypoint: ["npm", "start"]
-        links:
-            - api
+        depends_on:
+            - mongo
         networks:
             - webappnetwork
     api:
-        image: mhart/alpine-node:6.8.0
+        image: mongo-express
         restart: always
         ports:
             - "9000:9000"
+            - "8081:8081"
         volumes:
             - ./api:/api
             - /api/node_modules
         depends_on:
-            - mongodb
+            - mongo
         networks:
             - webappnetwork
-    mongodb:
+        links:
+            - "mongo"
+    mongo:
+        container_name: mongo
         image: mongo:4.0
         restart: always
-        container_name: mongodb
         volumes:
             - ./data-node:/data/db
         ports:
             - 27017:27017
-        command: mongod --noauth --smallfiles
+        command: mongod --noauth --smallfiles --bind_ip 0.0.0.0
         networks:
             - webappnetwork
 networks:
