@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 
 services:
   client:
@@ -9,7 +9,6 @@ services:
       - ./react-client:/usr/src/app
       - node_modules:/usr/src/app/node_modules
       
-
   server:
     build: ./express-server
     ports:
@@ -31,12 +30,3 @@ volumes:
   node_modules:
   node_modules_b:
   data:
-    
-
-
-  
-
-
-    
-
-    
