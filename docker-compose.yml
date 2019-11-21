@@ -1,44 +1,42 @@
-version: "3.7"
+version: '3'
+
 services:
-    client:
-        image: mhart/alpine-node:8.11.4
-        restart: always
-        ports:
-            - "3000:3000"
-        working_dir: /client/src/app
-        volumes:
-            - ./client:/client/src/app
-        entrypoint: ["npm", "start"]
-        depends_on:
-            - mongo
-        networks:
-            - webappnetwork
-    api:
-        image: mongo-express
-        restart: always
-        ports:
-            - "9000:9000"
-            - "8081:8081"
-        volumes:
-            - ./api:/api
-            - /api/node_modules
-        depends_on:
-            - mongo
-        networks:
-            - webappnetwork
-        links:
-            - "mongo"
-    mongo:
-        container_name: mongo
-        image: mongo:4.0
-        restart: always
-        volumes:
-            - ./data-node:/data/db
-        ports:
-            - 27017:27017
-        command: mongod --noauth --smallfiles --bind_ip 0.0.0.0
-        networks:
-            - webappnetwork
-networks:
-    webappnetwork:
-        driver: bridge
+  client:
+    build: ./react-client
+    ports:
+      - 3000:3000
+    volumes: 
+      - ./react-client:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
+      
+
+  server:
+    build: ./express-server
+    ports:
+      - 3001:3000
+    volumes:
+      - ./express-server:/usr/src/backend-app
+      - node_modules_b:/usr/src/backend-app/node_modules
+    depends_on: 
+      - mongo
+
+  mongo:
+    image: mongo
+    volumes:
+      - data:/data/db
+    ports:
+      - "27017:27017"
+
+volumes: 
+  node_modules:
+  node_modules_b:
+  data:
+    
+
+
+  
+
+
+    
+
+    
