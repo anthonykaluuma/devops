@@ -6,7 +6,7 @@
   "scripts": {
     "client": "cd express-server && npm start",
     "server": "cd react-client && npm start",
-    "start": "concurrently \"npm run server\" \"npm run client\""
+    "start": "(cd express-server && npm run start && cd react-client && npm start)"
   },
   "keywords": [],
   "author": "",
