@@ -1,0 +1,18 @@
+{
+  "name": "devops",
+  "version": "1.0.0",
+  "description": "MERN Boilerplate",
+  "repository": "https://github.com/anthonykaluuma/devops",
+  "scripts": {
+    "client": "cd react-client && npm start",
+    "server": "cd express-server && npm start",
+    "start": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^3.6.1",
+    "npm-run-all": "^4.1.5"
+  }
+}
