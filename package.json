@@ -4,9 +4,9 @@
   "description": "MERN Boilerplate",
   "repository": "https://github.com/anthonykaluuma/devops",
   "scripts": {
-    "client": "cd express-server && npm start",
-    "server": "cd react-client && npm start",
-    "start": "(cd express-server && npm run start && cd react-client && npm start)"
+    "client": "cd react-client && npm start",
+    "server": "cd express-server && npm start",
+    "start": "concurrently --kill-others \"npm run server\" \"npm run client\""
   },
   "keywords": [],
   "author": "",
