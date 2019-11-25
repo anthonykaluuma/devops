@@ -1,40 +1,10 @@
-version: 2.1
+version: 2
 jobs:
   build:
-    machine: true
-    working_directory: ~/devops
-    cypress/run:
-      docker:
-        - image: cypress/base:10
-      parallelism: 1
-      steps:
-        - checkout
-        - run: docker-compose down -v && docker-compose up --build
-        - restore_cache:
-            keys:
-              - cache-{{ .Branch }}-{{ checksum "package.json" }}
-        - run:
-            name: Npm CI
-            command: npm ci
-        - run:
-            command: npx cypress verify
-        - save_cache:
-            key: cache-{{ .Branch }}-{{ checksum "package.json" }}
-            paths:
-              - ~/.npm
-              - ~/.cache
-        - persist_to_workspace:
-            root: ~/devops
-            paths:
-              - project
-              - .cache/Cypress
-        - attach_workspace:
-            at: ~/devops/cypress
-        - run:
-            name: Run Cypress tests
-            command: 'npx cypress run'
-  workflows:
-    build:
-      jobs:
-        - cypress/run
-    version: 2
+    machine: true # Use a Linux VM instead of docker environment
+    working_directory: ~/devops # Default working directory, where your project will be cloned
+    steps:
+      - checkout
+      - run: docker-compose down -v && docker-compose up --build
+      - store_artifacts:
+        path: ~/repo/features/fail-screenshots

@@ -21,12 +21,5 @@
 // Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
 //
 //
-// -- This is will overwrite an existing command --
+// -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-
-Cypress.Commands.add("visitUrl", (host, port) => {
-    cy.visit(`${host}:${port}`)
-    cy.clearCookie("sp_dc")
-    cy.reload()
-    cy.getCookie("sp_dc").should('be.null')
-})

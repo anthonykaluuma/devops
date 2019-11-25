@@ -1,6 +1,7 @@
 {
     "homepage": {
-        "banner": "4444333322221111"
+        "banner": "4444333322221111",
+        "app-title": ""
     },
     "nextpage": {
         "foo": "",
