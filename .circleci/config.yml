@@ -7,9 +7,9 @@ jobs:
       - checkout
       - run:
           name: "Log build status"
-          command: touch .build-status; exit 0
+          command: sleep 400; touch .build-status; exit 0
           background: true
-      - run: docker-compose down -v && docker-compose up --build && command bin/exec.sh
+      - run: docker-compose down -v && docker-compose up --build
       - run:
            name: "Verify Build Status"
            command: if [ -f .build-status ]; then echo "Build passed buddy."; exit 0; fi
