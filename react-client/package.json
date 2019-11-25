@@ -4,15 +4,16 @@
   "private": true,
   "dependencies": {
     "axios": "^0.18.1",
+    "cypress": "^3.3.2",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
     "react-scripts": "1.1.5",
-    "cypress": "^3.3.2"
+    "start-server-and-test": "^1.10.6"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "start-server-and-test 'react-scripts start' 3000 'cypress run'",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "cypress run --browser chrome --reporter junit --reporter-options mochaFile=test_result.xml",
     "eject": "react-scripts eject"
   }
 }
