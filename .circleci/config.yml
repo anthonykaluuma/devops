@@ -1,14 +1,12 @@
-version: 2 
+version: 2
 jobs:
   build:
     machine: true # Use a Linux VM instead of docker environment
-    working_directory: ~/repo # Default working directory, where your project will be cloned
-    build:
-      # ..
-      steps:
-        - checkout
-          build:
-            # ..
-            steps:
-              # - …
-              - run: docker-compose down -v && docker-compose up --build
+    working_directory: ~/devops # Default working directory, where your project will be cloned
+    steps:
+      - checkout
+        build:
+          # ..
+          steps:
+            # - …
+            - run: docker-compose down -v && docker-compose up --build
