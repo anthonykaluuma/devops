@@ -5,8 +5,11 @@ jobs:
     working_directory: ~/devops # Default working directory, where your project will be cloned
     steps:
       - checkout
-      - run: docker-compose down -v && docker-compose up --build
-      - run:
-           name: "Verify Build Status"
-           command: if echo $ = 0; then echo "Build passed buddy."; exit 0; fi
-           when: always
+      - run: |
+      TAG=$DOCKER_TAG
+      docker-compose down -v && docker-compose up --build
+        if [[ ((`echo $CIRCLE_BRANCH | grep -c "master"` > 0))]]; then
+          echo "Push to registry since it's the master branch."
+        else
+          echo "Skip Docker push image since it is not the master branch."
+        fi
