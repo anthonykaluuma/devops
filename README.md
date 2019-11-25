@@ -18,7 +18,7 @@
 
 In the project root directory, you can run:
 
-```docker-compose down -v && docker-compose up --build```
+```$docker-compose down -v && docker-compose up --build```
 
 
 - Runs the app client in the development mode.<br>
@@ -32,13 +32,15 @@ You will also see any lint errors in the console.
 
 ### Local Installation 
 
-In the `/react-client` directory, you can run:
+In the `/react-client` & `/express-server`  directory, you run:
 
-```npm install```
+```$npm install```
 
 ### Running locally 
 
-```npm start```
+CD `/react-client`
+
+```$npm start```
 
 - Runs the app client in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -52,9 +54,9 @@ You will also see any lint errors in the console.
 
 ## Tests
 
-In the project directory, you can run:
+In the `/react-client` directory, you can run:
 
-```npm test```
+```$npm test```
 
 This will execute the cypress test suite 
 
