@@ -5,12 +5,8 @@ jobs:
     working_directory: ~/devops # Default working directory, where your project will be cloned
     steps:
       - checkout
-      - run:
-          name: "Log build status"
-          command: sleep 400; touch .build-status; exit 0
-          background: true
       - run: docker-compose down -v && docker-compose up --build
       - run:
            name: "Verify Build Status"
-           command: if [ -f .build-status ]; then echo "Build passed buddy."; exit 0; fi
+           command: if echo $ = 0; then echo "Build passed buddy."; exit 0; fi
            when: always
