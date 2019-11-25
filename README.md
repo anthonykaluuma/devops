@@ -16,7 +16,7 @@
 
 ### Local Virtual Machine
 
-In the project directory, you can run:
+In the project root directory, you can run:
 
 ```docker-compose down -v && docker-compose up --build```
 
@@ -31,6 +31,8 @@ The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
 
 ### Local Installation 
+
+In the `/react-client` directory, you can run:
 
 ```npm install```
 
@@ -56,7 +58,7 @@ In the project directory, you can run:
 
 This will execute the cypress test suite 
 
-![cypress](./assets/Screenshot 2019-11-25 at 18.18.50.png)
+![cypress](assets/Screenshot-2019-11-25.png)
 
 
 
