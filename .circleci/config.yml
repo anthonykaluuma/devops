@@ -5,8 +5,6 @@ jobs:
     working_directory: ~/devops # Default working directory, where your project will be cloned
     steps:
       - checkout
-        build:
-          # ..
-          steps:
-            # - …
-            - run: docker-compose down -v && docker-compose up --build
+        steps:
+          # - …
+          - run: docker-compose down -v && docker-compose up --build
