@@ -1,48 +1,14 @@
-version: 2.1
-
-orbs:
-  docker: circleci/docker@0.5.13
-
+version: 2 
 jobs:
-  run_tests:
-    working_directory: ~/devops
-    docker:
-      - image: circleci/node:10.16.3
-    steps:
-      - checkout
-      - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@latest'
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-      - run:
-          name: npm-install Devops
-          command: npm install
-      - run:
-          name: npm-install express-server
-          command: cd express-server npm install
-      - run:
-          name: npm-install client
-          command: cd react-client npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - ./node_modules
-      - run:
-          name: start service & client
-          command: npm start
-  
-workflows:
-  version: 2
-  build_deploy:
-    jobs:
-      - run_tests
-      - docker/publish:
-          image: gumshoe/$CIRCLE_PROJECT_REPONAME
-          dockerfile: dockerfile
-          requires:
-            - run_tests
-          filters:
-            branches:
-              only: 
-                - master
+  build:
+    machine: true # Use a Linux VM instead of docker environment
+    working_directory: ~/repo # Default working directory, where your project will be cloned
+    build:
+      # ..
+      steps:
+        - checkout
+          build:
+            # ..
+            steps:
+              # - …
+              - run: docker-compose down -v && docker-compose up --build
