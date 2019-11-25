@@ -1,26 +1,40 @@
-version: 2.1
+version: 2
 jobs:
-  orbs:
-    cypress: cypress-io/cypress@1
-workflows:
-  build: 'Install dependencies checkout code'
-    machine: true # Use a Linux VM instead of docker environment
-    working_directory: ~/devops # Default working directory, where your project will be cloned
-    steps:
-      - checkout
-      - run: docker-compose down -v && docker-compose up --build
-    build: 'execute e2e tests'
+  build:
+    machine: true
+    working_directory: ~/devops
+    cypress/run:
+      docker:
+        - image: cypress/base:10
+      parallelism: 1
+      steps:
+        - checkout
+        - run: docker-compose down -v && docker-compose up --build
+        - restore_cache:
+            keys:
+              - cache-{{ .Branch }}-{{ checksum "package.json" }}
+        - run:
+            name: Npm CI
+            command: npm ci
+        - run:
+            command: npx cypress verify
+        - save_cache:
+            key: cache-{{ .Branch }}-{{ checksum "package.json" }}
+            paths:
+              - ~/.npm
+              - ~/.cache
+        - persist_to_workspace:
+            root: ~/devops
+            paths:
+              - project
+              - .cache/Cypress
+        - attach_workspace:
+            at: ~/devops/cypress
+        - run:
+            name: Run Cypress tests
+            command: 'npx cypress run'
+  workflows:
+    build:
       jobs:
-        # install dependencies first (on 1 machine)
-        - cypress/install
-        # now run tests
-        - cypress/run:
-            # give this job a custom name for clarity
-            name: 'end-to-end tests'
-            requires:
-              # use previously installed dependencies
-              # to avoid installing them on each machine running tests
-              - cypress/install
-            record: true # record results to Cypress Dashboard
-          - store_artifacts:
-              path: ~/devops/features/fail-screenshots
+        - cypress/run
+    version: 2
