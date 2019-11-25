@@ -7,4 +7,4 @@ jobs:
       - checkout
       - run: docker-compose down -v && docker-compose up --build
       - store_artifacts:
-        path: ~/repo/features/fail-screenshots
+          path: ~/repo/features/fail-screenshots
