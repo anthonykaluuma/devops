@@ -6,7 +6,6 @@ jobs:
     steps:
       - checkout
           command: |
-
             timeout=$(command -v timeout)
             if [ -z $timeout ]; then
                 timeout=$(command -v gtimeout)
