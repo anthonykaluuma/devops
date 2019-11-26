@@ -7,9 +7,8 @@ jobs:
       - checkout
       - run:
         name: "Start Tests"
-        command: |
-        timeout=$(command -v timeout)
-          if [ -z $timeout ]; then
+        command: timeout=$(command -v timeout)
+          if [ -z $timeout ]; 
             timeout=$(command -v gtimeout)
           fi
 
@@ -19,4 +18,4 @@ jobs:
             timeout_cmd="$timeout 80"
           fi
 
-        $timeout_cmd <docker-compose up -d>
+          $timeout_cmd <docker-compose up -d>
