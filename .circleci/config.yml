@@ -5,7 +5,7 @@ jobs:
     working_directory: ~/devops # Default working directory, where your project will be cloned
     steps:
       - checkout
-          command: |
+          command:
             timeout=$(command -v timeout)
             if [ -z $timeout ]; then
                 timeout=$(command -v gtimeout)
