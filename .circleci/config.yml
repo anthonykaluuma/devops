@@ -1,21 +1,43 @@
 version: 2
+
 jobs:
-  build:
-    machine: true # Use a Linux VM instead of docker environment
-    working_directory: ~/devops # Default working directory, where your project will be cloned
+  checkout_code:
+    build:
+      machine: true # Use a Linux VM instead of docker environment
+      working_directory: ~/devops # Default working directory, where your project will be cloned
+      steps:
+        - checkout
+        - save_cache:
+              key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+              paths:
+                - ~/devops
+  deploy:
+    machine:
+      enabled: true
+    working_directory: ~/devops
+    environment:
+      - HEROKU_APP: devops-boilerplate
     steps:
+      - restore_cache:
+          keys:
+            - v1-repo-{{ .Environment.CIRCLE_SHA1 }}
       - checkout
       - run:
-        name: "Start Tests"
-        command: timeout=$(command -v timeout)
-          if [ -z $timeout ]; 
-            timeout=$(command -v gtimeout)
-          fi
+          name: Deploy Master to Heroku
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/devops-boilerplate.git master
 
-          if [ -z $timeout ]; then
-            echo "Tests Passed Sucessfully\n"
-          else
-            timeout_cmd="$timeout 80"
-          fi
-
-          $timeout_cmd <docker-compose up -d>
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - bundle_dependencies:
+          requires:
+            - checkout_code
+      - cypress_test:
+          requires:
+            - bundle_dependencies
+            - docker-compose up
+      - deploy:
+          requires:
+            - cypress_test
