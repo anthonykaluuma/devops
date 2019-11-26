@@ -7,6 +7,7 @@
 - [React](https://reactjs.org/)
 - [Node](https://nodejs.org/en/)
 - [Cypress](https://www.cypress.io/)
+- [Docker](https://www.docker.com/get-started)
 
 #### CI/CD
 
