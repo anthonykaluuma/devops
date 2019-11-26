@@ -1,7 +1,8 @@
 version: 2.1
-    cypress: cypress-io/cypress@1
-  workflows:
-jobs:
+orbs:
+  cypress: cypress-io/cypress@1
+  build:
+    jobs:
   api:
     docker:
       - image: circleci/node:10.8.0
