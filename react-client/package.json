@@ -11,7 +11,8 @@
     "start-server-and-test": "^1.10.6"
   },
   "scripts": {
-    "start": "start-server-and-test 'react-scripts start' 3000 'cypress run'",
+    "start": "react-scripts start",
+    "start-test": "start-server-and-test 'react-scripts start' 3000 'cypress run'",
     "build": "react-scripts build",
     "test": "cypress run --browser chrome --reporter junit --reporter-options mochaFile=test_result.xml",
     "eject": "react-scripts eject",

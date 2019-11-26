@@ -1,44 +1,80 @@
-version: 2
-
+version: 2.1
+  orbs:
+    cypress: cypress-io/cypress@1
+  workflows:
 jobs:
-  checkout_code:
-    build:
-      machine: true # Use a Linux VM instead of docker environment
-      working_directory: ~/devops # Default working directory, where your project will be cloned
-      steps:
-        - checkout
-        - save_cache:
-              key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
-              paths:
-                - ~/devops
+  api:
+    docker:
+      - image: circleci/node:10.8.0
+
+    working_directory: ~/devops-boilerplate/
+
+    steps:
+      - checkout
+      - run: cd devops-boilerplate/express-server && npm install
+      - run: cd devops-boilerplate/express-server && npm run build
+      - run: cd devops-boilerplate/express-server && npm start
+
+  client:
+    docker:
+      - image: circleci/node:10.8.0
+
+    working_directory: ~/devops-boilerplate/
+    steps:
+      - checkout
+      - run: cd devops-boilerplate/react-client && npm install
+      - run: cd devops-boilerplate/react-client && npm run build
+      - cypress/install
+      - cypress/run:
+        requires:
+          - cypress/install
+          start: cd devops-boilerplate/react-client && npm start
+          wait-on: 'http://localhost:3000'
+            post-steps:
+              - store_test_results:
+                  path: cypress/results
+
   deploy:
     machine:
       enabled: true
-    working_directory: ~/devops
-    environment:
-      - HEROKU_APP: devops-boilerplate
+    working_directory: ~/devops-boilerplate/
+      environment:
+        - HEROKU_APP: devops-boilerplate
+    docker:
+      - image: circleci/node:10.8.0
     steps:
-      - restore_cache:
-          keys:
-            - v1-repo-{{ .Environment.CIRCLE_SHA1 }}
-      - checkout
+      - run:
+          name: Run setup script
+          command: bash .circleci/setup-heroku.sh
+      - add_ssh_keys:
+          fingerprints:
+            - "5a:17:77:cd:28:f4:8a:ca:7d:b0:bd:cf:ec:a1:20:d2"
       - run:
           name: Deploy Master to Heroku
           command: |
-            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/devops-boilerplate.git master
+            git push --force git@heroku.com:$HEROKU_APP_NAME.git HEAD:refs/heads/master
+            heroku run node index.js
+            heroku restart
 
 workflows:
   version: 2
+  concurrently:
+    jobs:
+      - api
+      - client
   build-and-deploy:
     jobs:
       - checkout_code
-      - bundle_dependencies:
-          requires:
-            - checkout_code
-      - cypress_test:
-          requires:
-            - bundle_dependencies
-            - docker-compose up
+      - client:
+        requires:
+          - checkout_code
+      - api:
+        - requires:
+          - checkout_code
+      - cypress/run:
+        requires:
+          - cypress/install
       - deploy:
-          requires:
-            - cypress_test
+        requires:
+          - cypress/run
+          - precompile_assets
