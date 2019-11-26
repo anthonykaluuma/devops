@@ -1,14 +1,9 @@
 version: 2.1
-orbs:
-  cypress: cypress-io/cypress@1
-  build:
-    jobs:
   api:
     docker:
       - image: circleci/node:10.8.0
 
     working_directory: ~/devops-boilerplate/
-
     steps:
       - checkout
       - run: cd devops-boilerplate/express-server && npm install
@@ -24,6 +19,8 @@ orbs:
       - checkout
       - run: cd devops-boilerplate/react-client && npm install
       - run: cd devops-boilerplate/react-client && npm run build
+    orbs:
+      cypress: cypress-io/cypress@1
       - cypress/install
       - cypress/run:
         requires:
@@ -33,7 +30,7 @@ orbs:
             post-steps:
               - store_test_results:
                   path: cypress/results
-
+                  
   deploy:
     machine:
       enabled: true
@@ -56,25 +53,25 @@ orbs:
             heroku run node index.js
             heroku restart
 
-workflows:
-  version: 2
-  concurrently:
-    jobs:
-      - api
-      - client
-  build-and-deploy:
-    jobs:
-      - checkout_code
-      - client:
-        requires:
-          - checkout_code
-      - api:
-        - requires:
-          - checkout_code
-      - cypress/run:
-        requires:
-          - cypress/install
-      - deploy:
-        requires:
-          - cypress/run
-          - precompile_assets
+  workflows:
+    version: 2
+    concurrently:
+      jobs:
+        - api
+        - client
+    build-and-deploy:
+      jobs:
+        - checkout_code
+        - client:
+          requires:
+            - checkout_code
+        - api:
+          - requires:
+            - checkout_code
+        - cypress/run:
+          requires:
+            - cypress/install
+        - deploy:
+          requires:
+            - cypress/run
+            - precompile_assets
