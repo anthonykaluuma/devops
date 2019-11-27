@@ -67,9 +67,4 @@ workflows:
   build:
     jobs:
       - build_test
-      - deploy-job:
-        requires:
-          - build-job
-        filters:
-          branches:
-            only: master
+      - deploy-job
