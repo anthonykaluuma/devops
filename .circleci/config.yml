@@ -7,18 +7,17 @@ workflows:
     jobs:
       client:
         - working_directory: ~/devops-boilerplate/
-        - react/install
+        - cd devops-boilerplate/react-client react/install
+        - cd devops-boilerplate/express-server npm install
         - react/test:
             requires:
               - cd react-client react/install
-
-      api:
-        - working_directory: ~/devops-boilerplate/
-        - cd express-server npm install
+              - cd express-server npm install
 
   build:
     jobs:
       - cypress/run:
-          start: npm start
+        - working_directory: ~/devops-boilerplate/
+          start: cd devops-boilerplate/react-client npm start
           wait-on: 'http://localhost:3000'
           no-workspace: true
