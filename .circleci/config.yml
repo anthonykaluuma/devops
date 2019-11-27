@@ -1,21 +1,56 @@
 version: 2.1
 orbs:
   cypress: cypress-io/cypress@1
-workflows:
-  build:
     jobs:
-      - cypress/client:
-         working_directory: react-client
-         run: npm install
-         wait-on: 'http://localhost:3000'
-
-      - cypress/server:
-          working_directory: express-server
-          run: npm install
-
-      - cypress/run:
-         post-steps:
-            - store_test_results:
-                path: cypress/results
-
-
+      build-job:
+        docker:
+            - image: circleci/node:7.10
+        steps:
+          - checkout
+          - restore_cache:
+          - working_directory: react-client
+              keys:
+                - v1-dependencies-{{ checksum "package.json" }}
+                - v1-dependencies-
+          - run: npm install
+          - save_cache:
+              paths:
+                - node_modules
+              key: v1-dependencies-{{ checksum "package.json" }}
+          - run: npm start
+          - run: npm test
+          - restore_cache:
+          - working_directory: express-server
+              keys:
+                - v1-dependencies-{{ checksum "package.json" }}
+                - v1-dependencies-
+          - run: npm install
+          - save_cache:
+              paths:
+                - node_modules
+              key: v1-dependencies-{{ checksum "package.json" }}
+          - run: npm start
+      deploy-job:
+        docker:
+          - image: circleci/node:7.10
+        steps:
+          - add_ssh_keys:
+              fingerprints:
+                - "c3:f6:4c:a4:98:81:f7:71:f3:9a:69:59:49:b7:77:48"
+          - run:
+              name: Deploy Master to Heroku
+              command: |
+                git push --force git@heroku.com:$devops-boilerplate.git HEAD:refs/heads/master
+                heroku run node index.js
+                heroku restart
+    workflows:
+      version: 2.1
+      build-deploy:
+        jobs:
+          - build-job
+          - deploy-job:
+              requires:
+                - build-job
+              filters:
+                branches:
+                  only: master
