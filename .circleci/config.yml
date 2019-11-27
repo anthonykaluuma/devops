@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
   jobs:
     build-job:
       docker:
@@ -42,7 +42,7 @@ version: 2
               heroku run node index.js
               heroku restart
   workflows:
-    version: 2
+    version: 2.1
     build-deploy:
       jobs:
         - build-job
