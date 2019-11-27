@@ -8,7 +8,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:10
+      - image: joincolony/circleci-cypress
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -27,8 +27,13 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: cd react-client && npm install
-      - run: cd express-server && yarn
+      - run:
+          name: Install client dependencies
+          command: cd react-client && npm install
+
+      - run:
+          name: Install server dependencies
+          command: cd express-server && yarn
 
       - save_cache:
           paths:
@@ -36,4 +41,6 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: cd react-client && npm test
+      - run:
+          name: Run Cypress Tests!
+          command: cd react-client && npm test
