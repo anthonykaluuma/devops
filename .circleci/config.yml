@@ -5,7 +5,6 @@ orbs:
 workflows:
   push:
     jobs:
-      - working_directory: ~/devops-boilerplate/
       - react/install
       - react/test:
           requires:
