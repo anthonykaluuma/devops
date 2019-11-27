@@ -1,19 +1,26 @@
 version: 2.1
 orbs:
   cypress: cypress-io/cypress@1
-  react: thefrontside/react@0.1.0
 workflows:
-  push:
-    jobs:
-      - react/install
-      - react/test:
-          requires:
-            - react/install
   build:
     jobs:
+      - cypress/client:
+         working_directory: react-client
+            requires:
+               - cypress/server
+         run: npm install
+         wait-on: 'http://localhost:3000'
+
+      - cypress/server:
+          working_directory: express-server
+          run: npm install
+
       - cypress/run:
-          working_directory: ~/devops-boilerplate/
-          yarn: false
-          start: cd react-client npm start
-          wait-on: 'http://localhost:3000'
-          no-workspace: true
+         requires:
+          - cypress/client
+          - cypress/server
+         post-steps:
+            - store_test_results:
+                path: cypress/results
+
+
