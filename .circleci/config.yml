@@ -12,7 +12,8 @@ workflows:
   build:
     jobs:
       - cypress/run:
+          working_directory: ~/devops-boilerplate/
           yarn: false
-          start: npm start
+          start: cd react-client npm start
           wait-on: 'http://localhost:3000'
           no-workspace: true
