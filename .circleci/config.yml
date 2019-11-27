@@ -4,6 +4,9 @@ jobs:
   api:
     docker:
       - image: circleci/node:10.8.0
+        environment:
+          ## this enables colors in the output
+          TERM: xterm
 
     working_directory: ~/devops-boilerplate/
     steps:
@@ -14,24 +17,18 @@ jobs:
 
   client:
     docker:
-      - image: circleci/node:10.8.0
+      - image: cypress/base:8
 
     working_directory: ~/devops-boilerplate/
     steps:
       - checkout
       - run: cd devops-boilerplate/react-client && npm install
       - run: cd devops-boilerplate/react-client && npm run build
-    orbs:
-      cypress: cypress-io/cypress@1
-      - cypress/install
-      - cypress/run:
-        requires:
-          - cypress/install
-          start: cd devops-boilerplate/react-client && npm start
-          wait-on: 'http://localhost:3000'
-            post-steps:
-              - store_test_results:
-                  path: cypress/results
+      - run: cd devops-boilerplate/react-client && npm test
+        wait-on: 'http://localhost:3000'
+          post-steps:
+            - store_test_results:
+                path: cypress/results
 
   deploy:
     machine:
