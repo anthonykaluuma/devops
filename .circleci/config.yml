@@ -29,7 +29,7 @@ jobs:
 
       - run:
           name: Install client dependencies
-          command: cd react-client && npm install 
+          command: cd react-client && npm install
 
       - run:
           name: Install server dependencies
@@ -45,7 +45,7 @@ jobs:
           name: Run Cypress Tests!
           start: cd react-client && npm start && cd express-server && yarn start
           wait-on: 'http://localhost:3000'
-          command: cd react-client && npm test
+          command: cd react-client && npm start
 
 workflows:
   version: 2

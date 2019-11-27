@@ -11,11 +11,11 @@
     "start-server-and-test": "^1.10.6"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "start-test": "start-server-and-test 'react-scripts start' 3000 'cypress run'",
+    "start-test": "react-scripts start",
+    "start": "start-server-and-test 'react-scripts start' 3000 'server'",
     "build": "react-scripts build",
     "test": "cypress run --reporter junit --reporter-options mochaFile=test_result.xml",
     "eject": "react-scripts eject",
-    "server": "cd express-server && npm start"
+    "server": "cd ./express-server && yarn start"
   }
 }
