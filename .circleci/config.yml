@@ -14,9 +14,6 @@ workflows:
           run: npm install
 
       - cypress/run:
-         requires:
-            - cypress/client
-            - cypress/server
          post-steps:
             - store_test_results:
                 path: cypress/results
