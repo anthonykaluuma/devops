@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start-test": "react-scripts start",
-    "start": "start-server-and-test 'react-scripts start' 3000 'server'",
+    "start": "start-server-and-test 'react-scripts start' 3000",
     "build": "react-scripts build",
     "test": "cypress run --reporter junit --reporter-options mochaFile=test_result.xml",
     "eject": "react-scripts eject",
