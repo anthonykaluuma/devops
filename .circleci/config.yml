@@ -6,8 +6,8 @@ workflows:
     jobs:
       - cypress/client:
          working_directory: react-client
-            requires:
-                - cypress/server
+           requires:
+               - cypress/server
          run: npm install
          wait-on: 'http://localhost:3000'
 
