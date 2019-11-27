@@ -1,4 +1,6 @@
 version: 2.1
+
+jobs:
   api:
     docker:
       - image: circleci/node:10.8.0
@@ -30,7 +32,7 @@ version: 2.1
             post-steps:
               - store_test_results:
                   path: cypress/results
-                  
+
   deploy:
     machine:
       enabled: true
