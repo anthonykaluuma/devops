@@ -4,8 +4,6 @@ jobs:
   api:
     docker:
       - image: circleci/node:10.8.0
-        environment:
-          ## this enables colors in the output
           TERM: xterm
 
     working_directory: ~/devops-boilerplate/
