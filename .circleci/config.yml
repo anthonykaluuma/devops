@@ -25,10 +25,6 @@ jobs:
       - run: cd devops-boilerplate/react-client && npm install
       - run: cd devops-boilerplate/react-client && npm run build
       - run: cd devops-boilerplate/react-client && npm test
-        wait-on: 'http://localhost:3000'
-          post-steps:
-            - store_test_results:
-                path: cypress/results
 
   deploy:
     machine:
