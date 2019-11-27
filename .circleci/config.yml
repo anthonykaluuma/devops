@@ -29,11 +29,11 @@ jobs:
 
       - run: cd react-client && npm install
       - run: cd express-server && yarn
-        
+
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: cd /react-client && npm test
+      - run: cd react-client && npm test
