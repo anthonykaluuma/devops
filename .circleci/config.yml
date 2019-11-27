@@ -63,7 +63,7 @@ jobs:
             heroku restart
   workflows:
     version: 2
-    build-and-deploy:
+    build:
       jobs:
         - build_test
         - deploy:
