@@ -5,14 +5,20 @@ orbs:
 workflows:
   push:
     jobs:
-      - react/install
-      - react/test:
-          requires:
-            - react/install
+      client:
+        - working_directory: ~/devops-boilerplate/
+        - react/install
+        - react/test:
+            requires:
+              - cd react-client react/install
+
+      api:
+        - working_directory: ~/devops-boilerplate/
+        - cd express-server npm install
+
   build:
     jobs:
       - cypress/run:
-          yarn: true
-          start: yarn start
+          start: npm start
           wait-on: 'http://localhost:3000'
           no-workspace: true
