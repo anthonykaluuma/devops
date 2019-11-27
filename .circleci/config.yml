@@ -5,7 +5,8 @@ orbs:
 workflows:
   push:
     jobs:
-      - cd react-client react/install
+      - working_directory: ~/devops-boilerplate/
+      - react/install
       - react/test:
           requires:
             - react/install
