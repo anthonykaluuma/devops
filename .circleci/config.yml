@@ -8,7 +8,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:8
+      - image: circleci/node:10
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -28,8 +28,8 @@ jobs:
             - v1-dependencies-
 
       - run: cd react-client && npm install
-      - run: cd express-server && npm install
-
+      - run: cd express-server && yarn
+        
       - save_cache:
           paths:
             - node_modules
