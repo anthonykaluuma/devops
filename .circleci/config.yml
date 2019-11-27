@@ -23,25 +23,6 @@ jobs:
       - run: cd devops-boilerplate/react-client && npm run build
       - run: cd devops-boilerplate/react-client && npm test
 
-  deploy:
-    machine:
-      enabled: true
-    working_directory: ~/devops-boilerplate/
-    docker:
-      - image: circleci/node:10.8.0
-    steps:
-      - run:
-          name: Run setup script
-          command: bash .circleci/setup-heroku.sh
-      - add_ssh_keys:
-          fingerprints:
-            - "5a:17:77:cd:28:f4:8a:ca:7d:b0:bd:cf:ec:a1:20:d2"
-      - run:
-          name: Deploy Master to Heroku
-          command: |
-            git push --force git@heroku.com:devops-boilerplate.git HEAD:refs/heads/master
-            heroku run node index.js
-            heroku restart
 
   workflows:
     version: 2
@@ -61,7 +42,3 @@ jobs:
         - cypress/run:
           requires:
             - cypress/install
-        - deploy:
-          requires:
-            - cypress/run
-            - precompile_assets
