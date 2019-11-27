@@ -33,7 +33,8 @@ jobs:
 
       - run:
           name: Install server dependencies
-          command: cd express-server && yarn
+          command: cd express-server && yarn && start
+          background: true
 
       - save_cache:
           paths:
@@ -47,8 +48,24 @@ jobs:
           wait-on: 'http://localhost:3000'
           command: cd react-client && npm start
 
+  deploy:
+    docker:
+      - image: buildpack-deps:trusty
+    steps:
+      - checkout
+      - run:
+          name: Deploy Master to Heroku
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+
 workflows:
   version: 2
   build:
     jobs:
       - build_test
+      - deploy:
+            requires:
+              - build_test
+            filters:
+              branches:
+                only: master
