@@ -29,11 +29,11 @@ jobs:
 
       - run:
           name: Install client dependencies
-          command: cd react-client && npm install
+          command: cd react-client && npm install && npm start
 
       - run:
           name: Install server dependencies
-          command: cd express-server && yarn
+          command: cd express-server && yarn && yarn start
 
       - save_cache:
           paths:
@@ -67,3 +67,9 @@ workflows:
   build:
     jobs:
       - build_test
+      - deploy-job:
+        requires:
+          - build-job
+        filters:
+          branches:
+            only: master
