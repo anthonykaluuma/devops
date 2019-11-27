@@ -1,44 +1,103 @@
+# Check https://circleci.com/docs/2.0/ for more details
+# for config.yml syntax see https://circleci.com/docs/2.0/configuration-reference/
 version: 2.1
 
+commands:
+  restore-cached-dependencies:
+    description: restores the NPM cache and the cached Cypress binary
+    steps:
+      # Download and cache dependencies for the app and for tests
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - dependencies-
+
+  install-dependencies:
+    # Install NPM dependencies quickly using "npm ci"
+    # https://on.cypress.io/continuous-integration
+    # https://docs.npmjs.com/cli/ci
+    description: installs npm dependencies
+    steps:
+       - checkout
+      # Install NPM dependencies quickly
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Install client dependencies
+          command: d devops-boilerplate/react-client && npm install
+          working_directory: ~/devops-boilerplate/
+      - run:
+          name: Install api dependencies
+          command: d devops-boilerplate/express-server && npm install
+          working_directory: ~/devops-boilerplate/
+      # show all installed Cypress versions
+      - run: DEBUG=cypress:cli npx cypress cache path
+      - run: DEBUG=cypress:cli npx cypress cache list
+      - run:
+          name: Verify cypress
+          command: npx cypress verify
+
+  cache-dependencies:
+    description: Save NPM cache and Cypress binary
+    steps:
+      - save_cache:
+          paths:
+            # all NPM modules
+            - ~/.npm
+            # Cypress binary (or yarn dependencies)
+            - ~/.cache
+          key: dependencies-{{ checksum "package.json" }}
+
+  web-healthcheck:
+    description: Runs the entire suite
+    parameters:
+      folder:
+        description:  "website_spec"
+        type: string
+    steps:
+      - run: npx cypress run --browser chrome --reporter junit --reporter-options mochaFile=test_result.xml
+
+  store-test-artifacts:
+    description: Saves Cypress screenshots and videos
+    steps:
+      - store_artifacts:
+          path: cypress/screenshots
+      - store_artifacts:
+          path: cypress/videos
+
 jobs:
-  api:
+  # 1. starts the app in the background
+  # 2. runs the tests in a separate command
+  two-commands:
     docker:
-      - image: circleci/node:10.8.0
+      # find Docker image at https://github.com/cypress-io/cypress-docker-images
+      - image: cypress/base:12.12.0
 
     working_directory: ~/devops-boilerplate/
+
     steps:
       - checkout
-      - run: cd devops-boilerplate/express-server && npm install
-      - run: cd devops-boilerplate/express-server && npm run build
-      - run: cd devops-boilerplate/express-server && npm start
+      - restore-cached-dependencies
+      - install-dependencies
+      - cache-dependencies
 
-  client:
-    docker:
-      - image: cypress/base:8
+      - run:
+          name: Start api
+          command: npm start
+          working_directory: ~/devops-boilerplate/express-server
+          background: true
 
-    working_directory: ~/devops-boilerplate/
-    steps:
-      - checkout
-      - run: cd devops-boilerplate/react-client && npm install
-      - run: cd devops-boilerplate/react-client && npm run build
-      - run: cd devops-boilerplate/react-client && npm test
+      - run:
+          name: Start client
+          command: npm start
+          working_directory: ~/devops-boilerplate/react-client
+          background: true
 
+      - run:
+          name: Run Cypress tests
+          command: npm test
+          working_directory: ~/devops-boilerplate/react-client
 
-  workflows:
-    version: 2
-    concurrently:
-      jobs:
-        - api
-        - client
-    build-and-deploy:
-      jobs:
-        - checkout_code
-        - client:
-          requires:
-            - checkout_code
-        - api:
-          - requires:
-            - checkout_code
-        - cypress/run:
-          requires:
-            - cypress/install
+      - store-test-artifacts
