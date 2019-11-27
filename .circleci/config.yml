@@ -43,28 +43,12 @@ jobs:
       # run tests!
       - run:
           name: Run Cypress Tests!
+          start: cd react-client && npm start && cd express-server && yarn start
+          wait-on: 'http://localhost:3000'
           command: cd react-client && npm test
-
-  deploy:
-    docker:
-      - image: circleci/node:7.10
-    steps:
-      - run:
-          name: Run setup script
-          command: bash .circleci/setup-heroku.sh
-      - add_ssh_keys:
-          fingerprints:
-            - "5a:17:77:cd:28:f4:8a:ca:7d:b0:bd:cf:ec:a1:20:d2"
-      - run:
-          name: Deploy Master to Heroku
-          command: |
-            git push --force git@heroku.com:devops-boilerplate.git HEAD:refs/heads/master
-            heroku run node index.js
-            heroku restart
 
 workflows:
   version: 2
   build:
     jobs:
       - build_test
-      - deploy-job
