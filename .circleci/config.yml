@@ -67,7 +67,7 @@ jobs:
       jobs:
         - build_test
         - deploy:
-            requires:
+          requires:
               - build_test
             filters:
               branches:
