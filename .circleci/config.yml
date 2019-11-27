@@ -17,8 +17,8 @@ workflows:
 
       - cypress/run:
          requires:
-          - cypress/client
-          - cypress/server
+            - cypress/client
+            - cypress/server
          post-steps:
             - store_test_results:
                 path: cypress/results
