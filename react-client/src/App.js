@@ -11,7 +11,7 @@ class App extends Component {
     };
   }
 
-// Execute the calls when componnent mounts
+// Execute the calls when component mounts
   componentDidMount(){
     this.getIndex();
   }
