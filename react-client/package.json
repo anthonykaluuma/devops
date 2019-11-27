@@ -14,7 +14,7 @@
     "start": "react-scripts start",
     "start-test": "start-server-and-test 'react-scripts start' 3000 'cypress run'",
     "build": "react-scripts build",
-    "test": "cypress run --browser chrome --reporter junit --reporter-options mochaFile=test_result.xml",
+    "test": "cypress run --reporter junit --reporter-options mochaFile=test_result.xml",
     "eject": "react-scripts eject",
     "server": "cd express-server && npm start"
   }
