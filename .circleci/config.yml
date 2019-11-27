@@ -4,7 +4,6 @@ jobs:
   api:
     docker:
       - image: circleci/node:10.8.0
-          TERM: xterm
 
     working_directory: ~/devops-boilerplate/
     steps:
