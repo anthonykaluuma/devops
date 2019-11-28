@@ -46,15 +46,15 @@ jobs:
           wait-on: 'http://localhost:3000'
           command: cd react-client && npm start
 
-    deploy:
-      docker:
-        - image: buildpack-deps:trusty
-      steps:
-        - checkout
-        - run:
-            name: Deploy Master to Heroku
-            command: |
-              git push https://heroku:$HEROKU_API_KEY@git.heroku.com/devops-boilerplate.git master
+  deploy:
+    docker:
+      - image: buildpack-deps:trusty
+    steps:
+      - checkout
+      - run:
+          name: Deploy Master to Heroku
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/devops-boilerplate.git master
 
 workflows:
   version: 2
