@@ -49,8 +49,31 @@ jobs:
   deploy:
     docker:
       - image: buildpack-deps:trusty
+    working_directory: ~/devops-boilerplate
+
     steps:
       - checkout
+        # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run:
+          name: Install client dependencies
+          command: cd react-client && npm build
+
+      - run:
+          name: Install server dependencies
+          command: cd express-server && yarn && yarn start
+          background: true
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
       - run:
           name: Deploy Master to Heroku
           command: |
