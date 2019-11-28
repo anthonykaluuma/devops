@@ -62,7 +62,7 @@ jobs:
 
       - run:
           name: Install client dependencies
-          command: cd react-client && npm build
+          command: cd react-client && npm install
 
       - run:
           name: Install server dependencies
