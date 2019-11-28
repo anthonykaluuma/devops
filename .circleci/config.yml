@@ -33,7 +33,7 @@ jobs:
 
       - run:
           name: Install server dependencies
-          command: cd express-server && yarn && start
+          command: cd express-server && yarn && yarn start
           background: true
 
       - save_cache:
@@ -56,7 +56,7 @@ jobs:
       - run:
           name: Deploy Master to Heroku
           command: |
-            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/devops-boilerplate.git master
 
 workflows:
   version: 2
