@@ -1,4 +1,3 @@
-# Javascript Node 8 simple CircleCI 2.0 configuration file
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 # Put this file in a .circleci/ folder
 version: 2
@@ -13,7 +12,6 @@ jobs:
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
 
     working_directory: ~/devops-boilerplate
 
@@ -33,7 +31,8 @@ jobs:
 
       - run:
           name: Install server dependencies
-          command: cd express-server && yarn
+          command: cd express-server && yarn && yarn start
+          background: true
 
       - save_cache:
           paths:
@@ -47,8 +46,24 @@ jobs:
           wait-on: 'http://localhost:3000'
           command: cd react-client && npm start
 
+    deploy:
+      docker:
+        - image: buildpack-deps:trusty
+      steps:
+        - checkout
+        - run:
+            name: Deploy Master to Heroku
+            command: |
+              git push https://heroku:$HEROKU_API_KEY@git.heroku.com/devops-boilerplate.git master
+
 workflows:
   version: 2
   build:
     jobs:
       - build_test
+      - deploy:
+            requires:
+              - build_test
+            filters:
+              branches:
+                only: master
