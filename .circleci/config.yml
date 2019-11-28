@@ -48,7 +48,7 @@ jobs:
 
   deploy:
     docker:
-      - image: buildpack-deps:trusty
+      - image: joincolony/circleci-cypress
     working_directory: ~/devops-boilerplate
 
     steps:
