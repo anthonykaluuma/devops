@@ -62,7 +62,8 @@ jobs:
 
       - run:
           name: Install client dependencies
-          command: cd react-client && npm install
+          command: cd react-client && npm install && npm start
+          background: true
 
       - run:
           name: Install server dependencies
@@ -77,7 +78,7 @@ jobs:
       - run:
           name: Deploy Master to Heroku
           command: |
-            git push https://heroku:31f9c0bf-49d7-43e0-8672-aa3b85833693@git.heroku.com/devops-boilerplate.git master
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/devops-boilerplate.git master
 
 workflows:
   version: 2
